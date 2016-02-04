@@ -13,24 +13,29 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 
 
-public class Main {
+public class App {
 	
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args){
 		CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
 		CronParser parser = new CronParser(cronDefinition);
 		String file = null;
 		if( new File("./quartz.properties").exists()){
 			file = "./quartz.properties";
 		} else {
-			if (args[0] != null || args[0] != ""){
+			if (args.length != 0){
 				file = args[0];
 			} else {
-				System.err.println("Forneça um arquivo como parâmetro!");
+				System.err.println("Forneça um arquivo como parametro!");
 				System.exit(0);
 			}
 		}
 		Properties prop = new Properties();
-		prop.load(new FileInputStream(file));
+		try {
+			prop.load(new FileInputStream(file));
+		} catch (Exception e) {
+			System.err.println("Arquivo não encontrado!");
+			e.printStackTrace();
+		}
 		
 		prop.forEach((k,v) -> {
 			System.out.printf("%s;", k);
